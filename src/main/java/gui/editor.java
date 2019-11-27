@@ -50,6 +50,7 @@ public class editor extends javax.swing.JFrame {
             trackKeys = true;
         }
     };
+    private Document doc2;
     
     Timer timer = new Timer(3000,taskPerformer);
     
@@ -282,12 +283,15 @@ public class editor extends javax.swing.JFrame {
     private void buttonCutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonCutActionPerformed
         Archivo ar = new Archivo(this.jTextPane1.getText());
         ar.setDoc(this.jTextPane1.getStyledDocument());
+        
         Memento state = ar.createMemento();
         history.addMemento(state);
         this.jTextPane1.cut();
+        System.out.println(history.previousMemento("hi").getArchivo().getDoc().getLength());
     }//GEN-LAST:event_buttonCutActionPerformed
 
     private void buttonCopyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonCopyActionPerformed
+        
         this.jTextPane1.copy();
     }//GEN-LAST:event_buttonCopyActionPerformed
 
@@ -299,13 +303,15 @@ public class editor extends javax.swing.JFrame {
     }//GEN-LAST:event_buttonPasteActionPerformed
 
     private void buttonUndoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonUndoActionPerformed
-        Memento previous = history.previousMemento(this.jTextPane1.getText());
-        if(previous == null){
+
+            Memento previous = history.previousMemento(this.jTextPane1.getText());
+            if(previous == null){
             
-        }
-        else{
+            }
+            else{
             this.jTextPane1.setText(previous.getArchivo().getText());
-        }
+            }
+
         
     }//GEN-LAST:event_buttonUndoActionPerformed
 
@@ -411,6 +417,30 @@ public class editor extends javax.swing.JFrame {
             }
         });
     }
+    
+    public void copyStyle() throws BadLocationException{
+        Memento previous = history.previousMemento(this.jTextPane1.getText());
+        StyledDocument styledDocument = previous.getArchivo().getDoc();   
+        Element element; 
+        doc2 = this.jTextPane1.getDocument(); 
+        System.out.println(styledDocument.getLength());
+        for(int i=0; i<2;i++) {
+            element = styledDocument.getCharacterElement(i);
+            AttributeSet attributeNew = element.getAttributes();   
+            append2(styledDocument.getText(i, 1), attributeNew);    
+        }
+    }
+
+private void append2(String text, AttributeSet attributeNew) {
+    try {
+        //this.jTextPane1.getDocument().insertString(HEIGHT, text, attributeNew);
+        doc2.insertString(doc2.getLength(), text, attributeNew);
+    } catch (BadLocationException ex) {
+        ex.printStackTrace();
+    }
+}
+    
+    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton botonBlack;

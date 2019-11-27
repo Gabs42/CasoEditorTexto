@@ -6,6 +6,7 @@
 package Editor;
 
 import Memento.Memento;
+import javax.swing.JTextPane;
 import javax.swing.text.Document;
 import javax.swing.text.StyledDocument;
 
@@ -70,7 +71,9 @@ public class Archivo {
     }
     
      public Memento createMemento(){
-        return new Memento(this);
+        Archivo ar = new Archivo(this.getText());
+        ar.setDoc(this.getDoc());
+        return new Memento(ar);
     }
 
     public StyledDocument getDoc() {
